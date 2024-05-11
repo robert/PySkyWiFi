@@ -1,0 +1,26 @@
+[project]
+name = "PySkyWiFi"
+version = "0.0.1"
+authors = [
+  { name="Robert Heaton", email="robqheaton@gmail.com" },
+]
+description = "Get free, incredibly stupid wi-fi on long-haul flights"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "httpx",
+  "base26"
+]
+
+[project.urls]
+Homepage = "https://github.com/robert/PySkyWiFi"
+Issues = "https://github.com/robert/PySkyWiFi/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
