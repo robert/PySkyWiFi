@@ -1,2 +1,2 @@
 httpx
-base26
+werkzeug
