@@ -14,7 +14,9 @@ classifiers = [
 ]
 dependencies = [
   "httpx",
-  "base26"
+  "PyGithub",
+  "werkzeug",
+  "PyYAML"
 ]
 
 [project.urls]
