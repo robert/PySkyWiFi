@@ -1,5 +1,7 @@
 import socket
 
+from PySkyWiFi import Protocol
+
 
 def receive_http_request(recv):
     request_data = ""
@@ -53,7 +55,7 @@ def receive_http_response(recv):
     return response_data
 
 
-def run_local_http_proxy(tp, port: int=8080):
+def run(protocol: Protocol, port: int=8080):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(('localhost', port))
     server_socket.listen(1)
@@ -61,19 +63,18 @@ def run_local_http_proxy(tp, port: int=8080):
 
     try:
         while True:
-            
-                client_connection, _ = server_socket.accept()
-                request_data = receive_http_request(lambda: client_connection.recv(1024).decode('utf-8'))
+            client_connection, _ = server_socket.accept()
+            request_data = receive_http_request(lambda: client_connection.recv(1024).decode('utf-8'))
 
-                try:
-                    tp.connect()
+            try:
+                protocol.connect()
 
-                    tp.write(request_data)
-                    res = receive_http_response(tp.recv_and_sleep)
-                    client_connection.send(res.encode('utf-8'))
-                    client_connection.close()
-                finally:
-                    tp.disconnect()
+                protocol.send(request_data)
+                res = receive_http_response(protocol.recv_and_sleep)
+                client_connection.send(res.encode('utf-8'))
+                client_connection.close()
+            finally:
+                protocol.close()
     finally:
         server_socket.close()
         client_connection.close()

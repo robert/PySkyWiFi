@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
-from PySkyWiFi.local_http_proxy import receive_http_request
+from PySkyWiFi import Protocol
+from PySkyWiFi.http.local_proxy import receive_http_request
 
 import httpx
 from httpx import Request
@@ -32,9 +33,6 @@ def send_http_request(request_data):
     url = headers["X-PySkyWiFi"]
     headers["Host"] = urlparse(url).hostname
 
-    print(url)
-    print(headers)
-    
     with httpx.Client() as client:
         request = Request(method, url, headers=headers, content=body.encode())
         response = client.send(request)
@@ -45,14 +43,13 @@ def send_http_request(request_data):
         return response
 
 
-def run_remote_http_proxy(tp):
+def run(protocol: Protocol):
     while True:
         try:
-            tp.connect()
+            protocol.connect()
 
-            req = receive_http_request(tp.recv_and_sleep)
+            req = receive_http_request(protocol.recv_and_sleep)
             res = send_http_request(req)
-            print(res)
-            tp.write(res)
+            protocol.send(res)
         finally:
-            tp.disconnect()
+            protocol.close()
